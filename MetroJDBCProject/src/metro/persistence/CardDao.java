@@ -10,9 +10,11 @@ import java.util.List;
 
 public interface CardDao {
     Card getCardById(int cardNo)throws CardNotFoundException, Exception;
-    List<Card> getAllCards();
-    public void updateBalance(int cardNo, double newBalance) throws DatabaseConnectionException, SQLException;
-    void deleteCard(int cardNo);
+    List<Card> getAllCards() throws DatabaseConnectionException, SQLException;
+    public void updateBalance(int cardNo, double fare) throws DatabaseConnectionException, CardNotFoundException, SQLException;
 	Card createCard(String name, double balance)
 			throws DatabaseConnectionException, InvalidAmountException, SQLException;
+	
+	public void alterBalance(int cardNo, double deductionAmount)
+	        throws DatabaseConnectionException, CardNotFoundException, SQLException;
 }
