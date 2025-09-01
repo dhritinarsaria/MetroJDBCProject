@@ -1,0 +1,19 @@
+package metro.persistence;
+
+
+import metro.entity.Station;
+import metro.exceptions.StationNotFoundException;
+
+import java.util.List;
+
+public interface StationDao {
+    List<Station> getAllStations() throws Exception;
+
+    void addStation(Station station) throws Exception;
+
+    int countStations() throws Exception;
+
+    Station getStationById(int stationId) throws StationNotFoundException, Exception;
+
+    Station getStationByName(String stationName) throws StationNotFoundException, Exception;
+}
