@@ -42,7 +42,7 @@ public class StationServiceImpl implements StationService{
         try {
             return stationDao.getStationByName(name);
         } catch (StationNotFoundException e) {
-//            System.err.println("Station not found: " + e.getMessage());
+            System.err.println("Station not found: " + e.getMessage());
             return null;
         } catch (Exception e) {
             System.err.println("Error fetching station by name: " + e.getMessage());
@@ -71,5 +71,14 @@ public class StationServiceImpl implements StationService{
             System.err.println("Error adding station: " + e.getMessage());
         }
     }
+
+	@Override
+	public boolean isValidStation(int id) {
+		if(this.getStationById(id)!=null) {
+			return true;
+		}
+		// TODO Auto-generated method stub
+		return false;
+	}
 
 }

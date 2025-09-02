@@ -19,18 +19,29 @@ public class CardServiceImpl implements CardService{
     public CardServiceImpl() {
         this.cardDao = new CardDaoImpl();
     }
+    
+    public boolean hasEnoughBalance(int cardNo) throws CardNotFoundException, Exception {
+    	Card card = cardDao.getCardById(cardNo);
+    	 if (card.getBalance() < 20) {
+             return false;
+         }
+    	 return true;
+    }
 
     // Business validation: check if card exists and has minimum balance
     public Card getCardById(int cardNo) throws CardNotFoundException, Exception {
         Card card = cardDao.getCardById(cardNo);
-        if (card.getBalance() < 20) {
-            throw new InsufficientBalanceException("Minimum balance of 20 required.");
-        }
+       
         return card;
     }
 
     public Card createCard(String name, double amount)
             throws DatabaseConnectionException, InvalidAmountException, SQLException {
+    	
+    	 if (amount < 100) {
+             throw new InvalidAmountException("Minimum balance for creating a card is 100");
+         }
+
         return cardDao.createCard(name, amount);
     }
 
@@ -43,28 +54,29 @@ public class CardServiceImpl implements CardService{
 
     @Override
     public void deductFare(SwipeRecord record)
-            throws DatabaseConnectionException, CardNotFoundException, SQLException {
-        cardDao.alterBalance(record.getCardNo(), record.getFareDeducted());
+            throws DatabaseConnectionException, CardNotFoundException, SQLException, Exception {
+    	
+    	Card card= cardDao.getCardById(record.getCardNo());
+    	this.rechargeCard(card, record.getFareDeducted());
+       
     }
 
     public List<Card> getAllCards() throws DatabaseConnectionException, SQLException {
         return cardDao.getAllCards();
     }
 
+	@Override
+	public boolean isValidCard(int cardNo) throws CardNotFoundException, Exception {
+		// TODO Auto-generated method stub
+		if(this.getCardById(cardNo)!=null) {
+			return true;
+		}
+		return false;
+	}
 
 
-//	@Override
-//	public double checkBalance(int cardNo) {
-//		// TODO Auto-generated method stub
-//		return 0;
-//	}
 
 
-//	@Override
-//	public void deductFare(int cardNo, double fare) {
-//		// TODO Auto-generated method stub
-//		
-//	}
 
    
 }

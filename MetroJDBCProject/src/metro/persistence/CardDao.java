@@ -15,6 +15,5 @@ public interface CardDao {
 	Card createCard(String name, double balance)
 			throws DatabaseConnectionException, InvalidAmountException, SQLException;
 	
-	public void alterBalance(int cardNo, double deductionAmount)
-	        throws DatabaseConnectionException, CardNotFoundException, SQLException;
+	
 }
