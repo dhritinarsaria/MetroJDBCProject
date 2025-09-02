@@ -24,15 +24,17 @@ public class UserPresentation {
 			System.out.println("Enter card number");
 	        Card card = cardPresentation.isValidCard(scanner.nextInt());
 	        System.out.println("cardNo:" + card.getCardNo() + " \n balance:" + card.getBalance());
+	        StationPresentation stationPresentation = new StationPresentation();
 
 	        // new sub-menu after showing card details
 	        boolean keepRunning = true;
 	        while (keepRunning) {
-	            System.out.println("\n--- Card Options ---");
+	            System.out.println("\n--- Station Options ---");
 	            System.out.println("1. Start Journey");
 	            System.out.println("2. View All Stations");
 	            System.out.println("3. Get Station By Name");
-	            System.out.println("4. Back to Main Menu");
+	            System.out.println("4. Add New Station");
+	            System.out.println("5. Back to Main Menu");
 	            System.out.print("Enter choice: ");
 	            int subChoice = scanner.nextInt();
 	            scanner.nextLine(); // consume newline
@@ -48,7 +50,7 @@ public class UserPresentation {
 	                    break;
 
 	                case 2:
-	                    StationPresentation stationPresentation = new StationPresentation();
+//	                    StationPresentation stationPresentation = new StationPresentation();
 	                    stationPresentation.viewAllStations();
 	                    break;
 
@@ -58,8 +60,16 @@ public class UserPresentation {
 	                    StationPresentation sp = new StationPresentation();
 	                    sp.viewStationByName(name);
 	                    break;
-
+	                    
 	                case 4:
+	                    System.out.print("Enter new station name: ");
+//	                    StationPresentation stationPresentation = new StationPresentation();
+	                    String newName = scanner.nextLine();
+	                    stationPresentation.addStation(newName);
+	                    break;
+
+	                  
+	                case 5:
 	                    keepRunning = false; // back to main menu
 	                    break;
 

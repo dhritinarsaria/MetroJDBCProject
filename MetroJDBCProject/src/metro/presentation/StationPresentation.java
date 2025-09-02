@@ -35,5 +35,14 @@ public class StationPresentation {
         }
     }
 
+	public void addStation(String newName) {
+		try {
+            stationService.addStation(newName);
+        } catch (Exception e) {
+            System.out.println("Error adding station: " + e.getMessage());
+        }
+		
+	}
+
 
 }
