@@ -7,33 +7,48 @@ import java.util.Scanner;
 
 import metro.entity.Card;
 import metro.entity.SwipeRecord;
-import metro.exceptions.CardNotFoundException;
-import metro.exceptions.DatabaseConnectionException;
 import metro.service.CardService;
+import metro.service.CardServiceImpl;
+import metro.service.FareService;
+import metro.service.FareServiceImpl;
 //import metro.service.SwipeRecordServiceImpl;
 
 public class FarePresentation {
 	
-	public void fare(Card card) throws DatabaseConnectionException, CardNotFoundException {
+	CardService cardService= new CardServiceImpl();
+	CardPresentation cardPresentation= new CardPresentation(cardService);
+	
+	public void fare(Card card) throws Exception {
+
 		Scanner scanner = new Scanner(System.in);
 		System.out.print("Enter start station id: ");
         int startId = scanner.nextInt();
+        StationPresentation stationPresentation= new StationPresentation();
+        if(!stationPresentation.isValidStationId(startId)) {
+        	System.out.println("Invalid station Id. Please try again");
+        	cardPresentation.startJourney(card);
+        }
+        
         System.out.print("Enter end station id: ");
+        
+        
         int endId = scanner.nextInt();
-        int fare= (endId-startId)*5;
-        SwipeRecord record = new SwipeRecord(
-                0, card.getCardNo(), fare, startId, endId,
-                Timestamp.valueOf(LocalDateTime.now()),
-                Timestamp.valueOf(LocalDateTime.now().plusMinutes(15)),
-                java.sql.Date.valueOf(LocalDate.now())
-        );
         
-//        SwipeRecordServiceImpl swipeRecordService= new SwipeRecordServiceImpl();
-//        swipeRecordService.addSwipeRecord(record);
-//        CardService cardService = new CardService();
-//        cardService.alterBalance(record);
+        if(!stationPresentation.isValidStationId(endId)) {
+        	System.out.println("Invalid station Id. Please try again");
+        	CardService cardService= new CardServiceImpl();
+        	CardPresentation cardPresentation= new CardPresentation(cardService);
+        	cardPresentation.startJourney(card);
+        }
         
-        System.out.println(record.getStart()+" to " +record.getEnd() +"\nAmount Deducted: "+record.getFareDeducted()+"\nRemaining Balance"+(card.getBalance()-record.getFareDeducted()));
+        FareService fareService= new FareServiceImpl();
+       double fare=  fareService.calculateFare(startId, endId);
+       
+       //add record by vaibhav returns record
+       //cardService.deductFare(record);
+   
+        
+        //System.out.println(record.getStart()+" to " +record.getEnd() +"\nAmount Deducted: "+record.getFareDeducted()+"\nRemaining Balance"+(card.getBalance()-record.getFareDeducted()));
 	}
 
 }

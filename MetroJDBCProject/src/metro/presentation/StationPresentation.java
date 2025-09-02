@@ -1,10 +1,11 @@
 package metro.presentation;
-
+import metro.presentation.*;
 import java.util.*;
 
 
 
 import metro.entity.*;
+import metro.exceptions.CardNotFoundException;
 import metro.exceptions.DatabaseConnectionException;
 import metro.exceptions.StationNotFoundException;
 import metro.service.CardService;
@@ -27,7 +28,7 @@ public class StationPresentation {
     }
     
     
-    public void showStationMenu(Card card) {
+    public void showStationMenu(Card card) throws CardNotFoundException, DatabaseConnectionException, Exception {
     	boolean keepRunning = true;
 
     	while (keepRunning) {
@@ -43,7 +44,8 @@ public class StationPresentation {
 
             switch (subChoice) {
                 case 1:
-                    startJourney(card);
+                  
+                    cardPresentation.startJourney(card);
                     break;
                 case 2:
                     viewAllStations();
@@ -55,8 +57,11 @@ public class StationPresentation {
                     addNewStation();
                     break;
                 case 5:
-                	System.out.println("Exiting...");
-                    System.exit(0); 
+//                	System.out.println("Exiting...");
+//                    System.exit(0); 
+                	UserPresentation userPresentation= new UserPresentation();
+                	userPresentation.askUser();
+                	
                     break;
                 default:
                     System.out.println("Invalid choice, try again.");
@@ -64,19 +69,7 @@ public class StationPresentation {
         }
     }
     
-    private void startJourney(Card card) {
-        try {
-            if (card.getBalance() < 20) {
-                cardPresentation.rechargeCard(card);  // handle any exception inside CardPresentation
-            } else {
-                FarePresentation farePresentation = new FarePresentation(); // ensure default constructor exists
-                farePresentation.fare(card);           // handle exceptions if any
-            }
-        } catch (Exception e) {
-            System.out.println("Error during journey: " + e.getMessage());
-        }
-    }
-    
+   
 //    private void startJourney(Card card) {
 //        if (card.getBalance() < 20) {
 //            cardPresentation.rechargeCard(card);
@@ -111,6 +104,11 @@ public class StationPresentation {
         System.out.print("Enter new station name: ");
         String newName = scanner.nextLine();
         stationService.addStation(newName);
+    }
+    
+    public boolean isValidStationId(int stationId) {
+    	return stationService.isValidStation(stationId);
+    	
     }
     
 //    public void viewAllStations() throws Exception {

@@ -23,25 +23,15 @@ public class UserPresentation {
 
 			System.out.println("Enter card number");
 			Card card=cardPresentation.isValidCard(scanner.nextInt()) ;
-			System.out.println("cardNo:"+ card.getCardNo()+" \n balance:"+card.getBalance());
+			System.out.println("cardNo:"+ card.getCardNo());
+			System.out.println("Existing balance:"+card.getBalance());
 			
 			StationPresentation stationPresentation = new StationPresentation();
-			stationPresentation.showStationMenu(card);
-				
-				//ask for journey
-				if(card.getBalance()<20) {
-					cardPresentation.rechargeCard(card);
-				}
-				else {
-					FarePresentation farePresentation= new FarePresentation();
-					farePresentation.fare(card);
-				}
-//				
-				
+			stationPresentation.showStationMenu(card);		
 			
 		}
 		else if(type==2) {
-			System.out.println("lets create a new card");
+			//System.out.println("lets create a new card");
 			Card card=cardPresentation.createCard();
 			//System.out.println("cardNo:"+ card.getCardNo()+" \n balance:"+card.getBalance());
 			System.out.println(card);

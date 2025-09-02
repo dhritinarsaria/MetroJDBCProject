@@ -1,5 +1,5 @@
 package metro.presentation;
-
+import metro.presentation.*;
 import java.sql.SQLException;
 import java.util.Scanner;
 
@@ -29,18 +29,32 @@ public class CardPresentation {
     	System.out.println("Enter Amount (>100): ");
     	int amount= scanner.nextInt();
     	return cardService.createCard(name, amount);
+    	
     	//System.out.println();
    
     }
+    void startJourney(Card card) throws CardNotFoundException, DatabaseConnectionException, Exception {
+        
+        	CardService cardService= new CardServiceImpl();
+            if (!cardService.hasEnoughBalance(card.getCardNo())) {
+                this.rechargeCard(card);  
+            } else {
+               FarePresentation farePresentation= new FarePresentation();       
+            farePresentation.fare(card);
+   
+    }
+    }
+    
     
     public void rechargeCard(Card card) throws CardNotFoundException, DatabaseConnectionException, Exception {
-    	System.out.println("Press 1 ro recharge card\nPress 2 to exit");
+    	System.out.println("Press 1 to recharge card\nPress 2 to go to main menu");
     	int choice=scanner.nextInt();
     	UserPresentation user= new UserPresentation();
     	if(choice==1) {
     		System.out.println("Enter Amount: ");
     		int amount = scanner.nextInt();
     		cardService.rechargeCard(card, amount);
+    		
     	}
     	else if(choice==2) {
     		user.askUser();
