@@ -70,7 +70,7 @@
 //                        int swipeInCard = sc.nextInt();
 //                        System.out.print("Enter station id: ");
 //                        int swipeInStation = sc.nextInt();
-////                        swipeDao.addSwipeRecord(new SwipeRecord(0, swipeInCard, swipeInStation, "IN"));
+//                       swipeDao.addSwipeRecord(new SwipeRecord(0, swipeInCard, swipeInStation, "IN"));
 //                        System.out.println("Swipe In recorded.");
 //                        break;
 //
