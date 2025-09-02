@@ -8,9 +8,9 @@ import metro.exceptions.DatabaseConnectionException;
 
 public class DBConnectionUtil {
 
-    private static final String URL = "jdbc:mysql://localhost:3306/metrodb";  // change db name if needed
+    private static final String URL = "jdbc:mysql://localhost:3306/javatraining";  // change db name if needed
     private static final String USER = "root";  // replace with your DB username
-    private static final String PASSWORD = "password"; // replace with your DB password
+    private static final String PASSWORD = "admin"; // replace with your DB password
     private static final String DRIVER_CLASS = "com.mysql.cj.jdbc.Driver";
 
     // Private constructor to prevent instantiation
