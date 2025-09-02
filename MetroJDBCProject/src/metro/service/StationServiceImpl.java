@@ -72,4 +72,13 @@ public class StationServiceImpl implements StationService{
         }
     }
 
+	@Override
+	public boolean isValidStation(int id) {
+		if(this.getStationById(id)!=null) {
+			return true;
+		}
+		// TODO Auto-generated method stub
+		return false;
+	}
+
 }

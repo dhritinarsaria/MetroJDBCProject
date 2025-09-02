@@ -10,4 +10,5 @@ public interface StationService {
     Station getStationByName(String name);       // fetch by name
     int countStations();                         // total stations
     void addStation(String name);                // add new station
+    boolean isValidStation(int id);
 }
