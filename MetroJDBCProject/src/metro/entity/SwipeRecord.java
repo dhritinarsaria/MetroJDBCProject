@@ -63,4 +63,6 @@ public class SwipeRecord {
 
     public Date getDate() { return date; }
     public void setDate(Date date) { this.date = date; }
+
+	
 }
