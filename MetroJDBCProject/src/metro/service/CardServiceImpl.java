@@ -12,7 +12,7 @@ import metro.persistence.CardDaoImpl;
 import java.sql.SQLException;
 import java.util.List;
 
-public class CardServiceImpl {
+public class CardServiceImpl implements CardService{
 
     private CardDao cardDao;
 
@@ -21,7 +21,7 @@ public class CardServiceImpl {
     }
 
     // Business validation: check if card exists and has minimum balance
-    public Card validateCard(int cardNo) throws CardNotFoundException, Exception {
+    public Card getCardById(int cardNo) throws CardNotFoundException, Exception {
         Card card = cardDao.getCardById(cardNo);
         if (card.getBalance() < 20) {
             throw new InsufficientBalanceException("Minimum balance of 20 required.");
@@ -34,12 +34,14 @@ public class CardServiceImpl {
         return cardDao.createCard(name, amount);
     }
 
+    @Override
     public void rechargeCard(Card card, double amount) throws DatabaseConnectionException, SQLException, CardNotFoundException {
         double newBalance = card.getBalance() + amount;
         card.setBalance(newBalance);
         cardDao.updateBalance(card.getCardNo(), newBalance);
     }
 
+    @Override
     public void deductFare(SwipeRecord record)
             throws DatabaseConnectionException, CardNotFoundException, SQLException {
         cardDao.alterBalance(record.getCardNo(), record.getFareDeducted());
@@ -48,6 +50,21 @@ public class CardServiceImpl {
     public List<Card> getAllCards() throws DatabaseConnectionException, SQLException {
         return cardDao.getAllCards();
     }
+
+
+
+//	@Override
+//	public double checkBalance(int cardNo) {
+//		// TODO Auto-generated method stub
+//		return 0;
+//	}
+
+
+//	@Override
+//	public void deductFare(int cardNo, double fare) {
+//		// TODO Auto-generated method stub
+//		
+//	}
 
    
 }
