@@ -51,11 +51,7 @@ public class CardDaoImpl implements CardDao {
 
     @Override
     public Card createCard(String name, double balance)
-            throws DatabaseConnectionException, InvalidAmountException, SQLException {
-
-        if (balance < 100) {
-            throw new InvalidAmountException("Minimum balance for creating a card is 100");
-        }
+            throws DatabaseConnectionException,  SQLException {
 
         Connection connection = DBConnectionUtil.getConnection();
         connection.setAutoCommit(false);
@@ -109,22 +105,7 @@ public class CardDaoImpl implements CardDao {
         }
     }
 
-    @Override
-    public void alterBalance(int cardNo, double deductionAmount)
-            throws DatabaseConnectionException, CardNotFoundException, SQLException {
-
-        Connection connection = DBConnectionUtil.getConnection();
-        PreparedStatement stmt = connection.prepareStatement(
-                "UPDATE Card SET balance = balance - ? WHERE cardNo = ?");
-
-        stmt.setDouble(1, deductionAmount);
-        stmt.setInt(2, cardNo);
-
-        int rows = stmt.executeUpdate();
-        if (rows == 0) {
-            throw new CardNotFoundException("Card with number " + cardNo + " not found.");
-        }
-    }
+ 
 
 
   

@@ -31,6 +31,11 @@ public class CardServiceImpl implements CardService{
 
     public Card createCard(String name, double amount)
             throws DatabaseConnectionException, InvalidAmountException, SQLException {
+    	
+    	 if (amount < 100) {
+             throw new InvalidAmountException("Minimum balance for creating a card is 100");
+         }
+
         return cardDao.createCard(name, amount);
     }
 
@@ -43,8 +48,11 @@ public class CardServiceImpl implements CardService{
 
     @Override
     public void deductFare(SwipeRecord record)
-            throws DatabaseConnectionException, CardNotFoundException, SQLException {
-        cardDao.alterBalance(record.getCardNo(), record.getFareDeducted());
+            throws DatabaseConnectionException, CardNotFoundException, SQLException, Exception {
+    	
+    	Card card= cardDao.getCardById(record.getCardNo());
+    	this.rechargeCard(card, record.getFareDeducted());
+       
     }
 
     public List<Card> getAllCards() throws DatabaseConnectionException, SQLException {
@@ -53,18 +61,7 @@ public class CardServiceImpl implements CardService{
 
 
 
-//	@Override
-//	public double checkBalance(int cardNo) {
-//		// TODO Auto-generated method stub
-//		return 0;
-//	}
 
-
-//	@Override
-//	public void deductFare(int cardNo, double fare) {
-//		// TODO Auto-generated method stub
-//		
-//	}
 
    
 }
