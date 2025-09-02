@@ -26,13 +26,9 @@ public class StationPresentation {
         }
     }
 
-    public void viewStationByName(String name) throws Exception {
+    public void viewStationByName(String name) throws StationNotFoundException {
         Station station = stationService.getStationByName(name);
-        if (station != null) {
-            System.out.println(station);
-        } else {
-            System.out.println("Station not found with name: " + name);
-        }
+      
     }
 
 	public void addStation(String newName) {

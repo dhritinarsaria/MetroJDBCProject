@@ -19,13 +19,19 @@ public class CardServiceImpl implements CardService{
     public CardServiceImpl() {
         this.cardDao = new CardDaoImpl();
     }
+    
+    public boolean hasEnoughBalance(int cardNo) throws CardNotFoundException, Exception {
+    	Card card = cardDao.getCardById(cardNo);
+    	 if (card.getBalance() < 20) {
+             return false;
+         }
+    	 return true;
+    }
 
     // Business validation: check if card exists and has minimum balance
     public Card getCardById(int cardNo) throws CardNotFoundException, Exception {
         Card card = cardDao.getCardById(cardNo);
-        if (card.getBalance() < 20) {
-            throw new InsufficientBalanceException("Minimum balance of 20 required.");
-        }
+       
         return card;
     }
 
@@ -58,6 +64,15 @@ public class CardServiceImpl implements CardService{
     public List<Card> getAllCards() throws DatabaseConnectionException, SQLException {
         return cardDao.getAllCards();
     }
+
+	@Override
+	public boolean isValidCard(int cardNo) throws CardNotFoundException, Exception {
+		// TODO Auto-generated method stub
+		if(this.getCardById(cardNo)!=null) {
+			return true;
+		}
+		return false;
+	}
 
 
 
