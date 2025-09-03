@@ -6,6 +6,7 @@ import java.util.List;
 
 import metro.entity.Station;
 import metro.exceptions.DatabaseConnectionException;
+import metro.exceptions.StationAlreadyExistsException;
 import metro.exceptions.StationNotFoundException;
 import metro.util.DBConnectionUtil;
 
@@ -28,7 +29,7 @@ public class StationDaoImpl implements StationDao{
 	    }
 
 	    @Override
-	    public void addStation(Station station) throws DatabaseConnectionException, Exception {
+	    public void addStation(Station station) throws DatabaseConnectionException, Exception, StationAlreadyExistsException {
 	    	String query = "INSERT INTO Station (stationName) VALUES (?)";
 	        try (Connection conn = DBConnectionUtil.getConnection();
 	             PreparedStatement ps = conn.prepareStatement(query)) {

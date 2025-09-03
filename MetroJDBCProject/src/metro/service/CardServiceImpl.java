@@ -53,11 +53,11 @@ public class CardServiceImpl implements CardService{
     }
 
     @Override
-    public void deductFare(SwipeRecord record)
+    public void deductFare(Card card, double fare)
             throws DatabaseConnectionException, CardNotFoundException, SQLException, Exception {
     	
-    	Card card= cardDao.getCardById(record.getCardNo());
-    	this.rechargeCard(card, record.getFareDeducted());
+    	//Card card= cardDao.getCardById(card.getCardNo());
+    	this.rechargeCard(card, -1*fare);
        
     }
 

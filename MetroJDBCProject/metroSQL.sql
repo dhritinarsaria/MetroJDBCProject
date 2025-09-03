@@ -41,6 +41,14 @@ CREATE TABLE SwipeRecords (
     FOREIGN KEY (start) REFERENCES Station(stationId),
     FOREIGN KEY (end) REFERENCES Station(stationId)
 );
+
+CREATE TABLE transactions (
+    transaction_id INT PRIMARY KEY AUTO_INCREMENT,
+    card_no INT NOT NULL,
+    amount DECIMAL(10,2) NOT NULL,
+    transaction_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (card_no) REFERENCES card(cardNo)
+);
 -- Insert Users
 INSERT INTO User (name, email) VALUES 
 ('Alice', 'alice@example.com'),
