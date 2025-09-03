@@ -38,8 +38,8 @@ public class CardServiceImpl implements CardService{
     public Card createCard(String name, double amount)
             throws DatabaseConnectionException, InvalidAmountException, SQLException {
     	
-    	 if (amount < 100) {
-             throw new InvalidAmountException("Minimum balance for creating a card is 100");
+    	 if (amount <= 100) {
+             throw new InvalidAmountException("Minimum balance for creating a card is >100");
          }
 
         return cardDao.createCard(name, amount);

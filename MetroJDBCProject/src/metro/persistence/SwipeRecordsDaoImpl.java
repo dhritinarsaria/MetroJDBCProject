@@ -5,72 +5,95 @@ import metro.exceptions.DatabaseConnectionException;
 import metro.util.DBConnectionUtil;
 
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
 public class SwipeRecordsDaoImpl implements SwipeRecordsDao {
 
     @Override
-    public void addSwipeRecord(SwipeRecord record) throws DatabaseConnectionException {
-        String sql = "INSERT INTO SwipeRecords (cardNo, fareDeducted, start, end, startTime, endTime, date) " +
-                     "VALUES (?, ?, ?, ?, ?, ?, ?)";
-
-        try (Connection con = DBConnectionUtil.getConnection();
-             PreparedStatement ps = con.prepareStatement(sql)) {
-
-            ps.setInt(1, record.getCardNo());
-            ps.setDouble(2, record.getFareDeducted());
-            ps.setInt(3, record.getStart());
-            ps.setInt(4, record.getEnd());
-            ps.setTimestamp(5, record.getStartTime());  // assuming getStartTime() returns java.sql.Timestamp
-            ps.setTimestamp(6, record.getEndTime());    // can be null if journey ongoing
-            ps.setDate(7, record.getDate());            // java.sql.Date
-
+    public void swipeIn(int cardNo, int startStationId) throws DatabaseConnectionException {
+        String sql = "INSERT INTO SwipeRecords (cardNo, start, end, startTime, date) VALUES (?, ?, NULL, ?, ?)";
+        try (Connection conn = DBConnectionUtil.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, cardNo);
+            ps.setInt(2, startStationId);
+            ps.setTimestamp(3, new Timestamp(System.currentTimeMillis()));
+            ps.setDate(4, new Date(System.currentTimeMillis()));
             ps.executeUpdate();
-
         } catch (SQLException e) {
-            throw new DatabaseConnectionException("Error while inserting swipe record: " + e.getMessage(), e);
+            throw new DatabaseConnectionException("Error during Swipe In: " + e.getMessage());
         }
     }
-    
+
+    @Override
+    public void swipeOut(int cardNo, int endStationId, double fare) throws DatabaseConnectionException {
+        String sql = "UPDATE SwipeRecords SET end = ?, endTime = ?, fareDeducted = ? " +
+                     "WHERE cardNo = ? AND end IS NULL";
+        try (Connection conn = DBConnectionUtil.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, endStationId);
+            ps.setTimestamp(2, new Timestamp(System.currentTimeMillis()));
+            ps.setDouble(3, fare);
+            ps.setInt(4, cardNo);
+            int updated = ps.executeUpdate();
+            if (updated == 0) {
+                throw new DatabaseConnectionException("No open journey found for card " + cardNo);
+            }
+        } catch (SQLException e) {
+            throw new DatabaseConnectionException("Error during Swipe Out: " + e.getMessage());
+        }
+    }
+
+    @Override
+    public SwipeRecord getOpenJourneyByCard(int cardNo) throws DatabaseConnectionException {
+        String sql = "SELECT * FROM SwipeRecords WHERE cardNo = ? AND end IS NULL";
+        try (Connection conn = DBConnectionUtil.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, cardNo);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                SwipeRecord record = new SwipeRecord();
+                record.setRecordId(rs.getInt("recordId"));
+                record.setCardNo(rs.getInt("cardNo"));
+                record.setStart(rs.getInt("start"));
+                record.setStartTime(rs.getTimestamp("startTime"));
+                record.setDate(rs.getDate("date"));
+                return record;
+            }
+        } catch (SQLException e) {
+            throw new DatabaseConnectionException("Error fetching open journey: " + e.getMessage());
+        }
+        return null;
+    }
+
     @Override
     public List<SwipeRecord> getRecordsByCard(int cardNo) throws DatabaseConnectionException {
-        String sql = "SELECT recordId, cardNo, fareDeducted, start, end, startTime, endTime, date " +
-                     "FROM SwipeRecords WHERE cardNo = ? ORDER BY startTime DESC";
-
         List<SwipeRecord> records = new ArrayList<>();
-
-        try (Connection con = DBConnectionUtil.getConnection();
-             PreparedStatement ps = con.prepareStatement(sql)) {
-
+        String sql = "SELECT * FROM SwipeRecords WHERE cardNo = ?";
+        try (Connection conn = DBConnectionUtil.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, cardNo);
-
-            try (ResultSet rs = ps.executeQuery()) {
-                while (rs.next()) {
-                    SwipeRecord record = new SwipeRecord();
-                    record.setRecordId(rs.getInt("recordId"));
-                    record.setCardNo(rs.getInt("cardNo"));
-                    record.setFareDeducted(rs.getDouble("fareDeducted"));
-                    record.setStart(rs.getInt("start"));
-                    record.setEnd(rs.getInt("end"));
-                    record.setStartTime(rs.getTimestamp("startTime"));
-                    record.setEndTime(rs.getTimestamp("endTime"));
-                    record.setDate(rs.getDate("date"));
-
-                    records.add(record);
-                }
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                SwipeRecord record = new SwipeRecord();
+                record.setRecordId(rs.getInt("recordId"));
+                record.setCardNo(rs.getInt("cardNo"));
+                record.setStart(rs.getInt("start"));
+                record.setEnd(rs.getInt("end"));
+                record.setFareDeducted(rs.getDouble("fareDeducted"));
+                record.setStartTime(rs.getTimestamp("startTime"));
+                record.setEndTime(rs.getTimestamp("endTime"));
+                record.setDate(rs.getDate("date"));
+                records.add(record);
             }
-
         } catch (SQLException e) {
-            throw new DatabaseConnectionException("Error fetching swipe records: " + e.getMessage(), e);
+            throw new DatabaseConnectionException("Error fetching swipe history: " + e.getMessage());
         }
-
         return records;
     }
-
-
-    // Other methods (not yet implemented)...
 }

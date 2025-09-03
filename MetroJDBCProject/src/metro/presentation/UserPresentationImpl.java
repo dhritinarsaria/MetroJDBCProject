@@ -20,7 +20,7 @@ public class UserPresentationImpl implements UserPresentation {
 	public void getDetails(Card card, int type) throws CardNotFoundException, DatabaseConnectionException, Exception {
 	    boolean keepRunning = true;
 	    while (keepRunning) {
-	        System.out.println("Press 1 to get User Details\nPress 2 to enter the Metro Station\nPress 3 to login as another user\nPress any other key to exit");
+	        System.out.println("Press 1 to get User Details\nPress 2 to enter the Metro Station\nPress 4 to login as another user\nPress any other key to exit");
 	        int ch = scanner.nextInt();
 
 	        if (ch == 1) {
@@ -30,10 +30,17 @@ public class UserPresentationImpl implements UserPresentation {
 	            StationPresentationImpl stationPresentation = new StationPresentationImpl();
 	            stationPresentation.showStationMenu(card);   
 	        } 
+	        else if(card.getBalance()<20) {
+	        	CardService cardService = new CardServiceImpl();
+	             CardPresentation cardPresentation = new CardPresentationImpl(cardService);
+	             cardPresentation.rechargeCard(card);
+	        	
+	        }
 	        else  if(ch==3){
 	            this.userType(type);  // go back to card options
 	            keepRunning = false;
 	        } 
+	       
 	        else {
 	        	System.out.println("Exiting!");
 	            System.exit(0);

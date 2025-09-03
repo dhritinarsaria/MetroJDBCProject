@@ -1,5 +1,6 @@
 package metro.service;
 import java.sql.Date;
+import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -11,20 +12,34 @@ import metro.persistence.SwipeRecordsDaoImpl;
 import metro.exceptions.*;
 
 public class SwipeServiceImpl implements SwipeService {
-	
-	 SwipeRecordsDao swipeRecordsDao = new SwipeRecordsDaoImpl();
-	 
-	 @Override
-	 public void addSwipeRecord(SwipeRecord record) throws DatabaseConnectionException {
-		 record.setStartTime(Timestamp.valueOf(LocalDateTime.now())); // auto-generate
-		 record.setEndTime(Timestamp.valueOf(LocalDateTime.now())); // auto-generate
-		 record.setDate(Date.valueOf(LocalDate.now()));               // auto-generate
-		 swipeRecordsDao.addSwipeRecord(record);
-	 }
-	 
-	 @Override
-	 public List<SwipeRecord> getSwipeHistoryByCard(int cardNo) throws DatabaseConnectionException{
-	     return swipeRecordsDao.getRecordsByCard(cardNo);
-	 }
 
+    private SwipeRecordsDao swipeDao = new SwipeRecordsDaoImpl();
+
+    @Override
+    public void swipeIn(int cardNo, int startStationId) throws DatabaseConnectionException {
+        SwipeRecord openJourney = swipeDao.getOpenJourneyByCard(cardNo);
+        if (openJourney != null) {
+            throw new DatabaseConnectionException("Card " + cardNo + " already has an open journey!");
+        }
+        swipeDao.swipeIn(cardNo, startStationId);
+    }
+
+    @Override
+    public void swipeOut(int cardNo, int endStationId, double fare) throws DatabaseConnectionException {
+        SwipeRecord openJourney = swipeDao.getOpenJourneyByCard(cardNo);
+        if (openJourney == null) {
+            throw new DatabaseConnectionException("No open journey found for card " + cardNo);
+        }
+        swipeDao.swipeOut(cardNo, endStationId, fare);
+    }
+
+    @Override
+    public SwipeRecord getOpenJourneyByCard(int cardNo) throws DatabaseConnectionException {
+        return swipeDao.getOpenJourneyByCard(cardNo);
+    }
+
+    @Override
+    public List<SwipeRecord> getSwipeHistoryByCard(int cardNo) throws DatabaseConnectionException {
+        return swipeDao.getRecordsByCard(cardNo);
+    }
 }

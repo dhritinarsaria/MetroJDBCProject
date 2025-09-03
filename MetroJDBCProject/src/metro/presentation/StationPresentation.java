@@ -12,7 +12,7 @@ public interface StationPresentation {
     boolean isValidStationId(int stationId);
 
     // If you want presentation layer to explicitly expose these too:
-    // void viewAllStations() throws Exception;
-    // void getStationByName() throws StationNotFoundException, Exception;
-    // void addNewStation();
+     void viewAllStations() throws Exception;
+     void getStationByName() throws StationNotFoundException, Exception;
+     void addNewStation();
 }

@@ -33,7 +33,7 @@ CREATE TABLE SwipeRecords (
     cardNo INT NOT NULL,
     fareDeducted DOUBLE NOT NULL,
     start INT NOT NULL,
-    end INT NOT NULL,
+    end INT ,
     startTime TIMESTAMP NOT NULL,
     endTime TIMESTAMP,
     date DATE NOT NULL,

@@ -34,12 +34,12 @@ public class StationPresentationImpl implements StationPresentation {
 
     	while (keepRunning) {
             System.out.println("\n--- Station Options ---");
-            System.out.println("1. Start Journey");
+            System.out.println("1. Metro Journey");
             System.out.println("2. View All Stations");
             System.out.println("3. Get Station By Name");
-            System.out.println("4. Add New Station");
-            System.out.println("5. View user details");
-            System.out.println("6. Login as another user");
+//            System.out.println("4. Add New Station");
+            System.out.println("4. View user details");
+            System.out.println("5. Login as another user");
             System.out.print("Enter choice: ");
             int subChoice = scanner.nextInt();
             scanner.nextLine(); // consume newline
@@ -55,17 +55,17 @@ public class StationPresentationImpl implements StationPresentation {
                     break;
                 case 3:
                 	 getStationByName(card,null);
-                	                	    break;
+//                	                	    break;
+//                case 4:
+//                    addNewStation(card);
+//                    break;
+//                    
                 case 4:
-                    addNewStation(card);
-                    break;
-                    
-                case 5:
                 	UserPresentation userPresentation1= new UserPresentationImpl();
                 	userPresentation1.getUserDetails(1, card.getCardNo(), card);
                 	
                 	break;
-                case 6:
+                case 5:
                     keepRunning = false;  // exit station menu loop
                     UserPresentation userPresentation= new UserPresentationImpl();
                     userPresentation.askUser();
@@ -81,7 +81,7 @@ public class StationPresentationImpl implements StationPresentation {
    
 
 
-    private void viewAllStations() {
+    public void viewAllStations() {
         List<Station> stations = stationService.getAllStations();
         if (stations != null && !stations.isEmpty()) {
             stations.forEach(System.out::println);
@@ -90,7 +90,7 @@ public class StationPresentationImpl implements StationPresentation {
         }
     }
 
-    private void getStationByName(Card card,String name) throws Exception {
+    public void getStationByName(Card card,String name) throws Exception {
     	if(name==null) {
         System.out.print("Enter station name: ");
         name = scanner.nextLine();}
@@ -118,7 +118,7 @@ public class StationPresentationImpl implements StationPresentation {
         
     }
 
-    private void addNewStation(Card card) throws StationAlreadyExistsException, Exception {
+    public void addNewStation(Card card) throws StationAlreadyExistsException, Exception {
         System.out.print("Enter new station name: ");
         String newName = scanner.nextLine();
         try {
@@ -149,6 +149,20 @@ public class StationPresentationImpl implements StationPresentation {
     	return false;
     	
     }
+
+
+	@Override
+	public void getStationByName() throws StationNotFoundException, Exception {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	@Override
+	public void addNewStation() {
+		// TODO Auto-generated method stub
+		
+	}
     
 //    public void viewAllStations() throws Exception {
 //        List<Station> stations = stationService.getAllStations();

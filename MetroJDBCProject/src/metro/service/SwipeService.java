@@ -1,14 +1,17 @@
 package metro.service;
 
+import java.sql.SQLException;
 import java.util.List;
 
 import metro.entity.SwipeRecord;
+import metro.exceptions.CardNotFoundException;
 import metro.exceptions.DatabaseConnectionException;
+import metro.exceptions.InvalidAmountException;
 
 public interface SwipeService {
-	void addSwipeRecord(SwipeRecord record) throws DatabaseConnectionException;
-//    void swipeIn(int cardNo, int stationId);     // swipe in
-//    double swipeOut(int cardNo, int stationId);  // swipe out (returns fare deducted)
-    List<SwipeRecord> getSwipeHistoryByCard(int cardNo) throws DatabaseConnectionException; // all trips for a card
-    
+    void swipeIn(int cardNo, int startStationId) throws DatabaseConnectionException;
+    void swipeOut(int cardNo, int endStationId, double fare) throws DatabaseConnectionException;
+    SwipeRecord getOpenJourneyByCard(int cardNo) throws DatabaseConnectionException;
+    List<SwipeRecord> getSwipeHistoryByCard(int cardNo) throws DatabaseConnectionException;
 }
+
